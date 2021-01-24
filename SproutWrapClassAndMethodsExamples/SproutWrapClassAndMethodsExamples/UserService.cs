@@ -12,7 +12,7 @@ namespace SproutWrapClassAndMethodsExamples
             _userRepository = userRepository;
         }
 
-        public void CadastrarUsuario(UserRequest request)
+        public void CreateUser(UserRequest request)
         {
             var user = new User(request);
             if (user.IsValid() == false)
