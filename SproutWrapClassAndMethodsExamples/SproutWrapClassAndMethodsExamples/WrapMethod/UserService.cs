@@ -30,9 +30,7 @@ namespace SproutWrapClassAndMethodsExamples.WrapMethod
 
         public void UpdateUser(UserRequest request)
         {
-            var user = new User(request);
-            if (user.IsValid() == false)
-                return;
+            var user = _userRepository.GetById(request.Id);
 
             _userRepository.Update(user);
 

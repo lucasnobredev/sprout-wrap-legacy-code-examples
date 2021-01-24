@@ -6,5 +6,6 @@ namespace SproutWrapClassAndMethodsExamples
 {
     public class UserRequest
     {
+        public int Id { get; set; }
     }
 }

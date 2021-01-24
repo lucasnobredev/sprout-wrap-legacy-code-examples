@@ -8,5 +8,6 @@ namespace SproutWrapClassAndMethodsExamples
     {
         void Insert(User user);
         void Update(User user);
+        User GetById(int id);
     }
 }
