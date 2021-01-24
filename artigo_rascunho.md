@@ -20,8 +20,7 @@ Wrap method e class
 
 **Exemplos**
 
-Problema:
-blablabla
+O desenvolvedor recebeu a tarefa para incluir uma nova funcionalidade: um envio de e-mail para todo o usuário que for cadastrado. Quando ele olhou para o código, encontrou isto:
 
 ```csharp
 public class UserService
@@ -43,21 +42,14 @@ public class UserService
 }
 ```
 
+Temos acima um fluxo de criação de usuário com um código bem legado e difícil de testar.
+
 Como resolver com Sprout?
 
 ## Sprout Method
 Uma nova alteração deve ser criada como um método novo. (novo comportamento)
 
-### Vantagens
-- está claramente separando código antigo (legado) do novo;
-- mesmo que você não o teste naquele momento, você está deixando a porta aberta para novas mudanças e testes futuros;
-
-### Desvantagens
-- quando você escolhe fazer um novo método, você está desistindo do método de origem no momento. Você não quer nem tentar testá-lo e tentar deixá-lo melhor;
-- as vezes não fica claro o porque toda a lógica está naquele método e apenas uma parte está em outra;
-
-
-### Exemplo em código
+### Solução
 
 ```csharp
 public void CreateUser(UserRequest request)
@@ -76,6 +68,14 @@ private void SendNotificationToUser(User user)
     //... code to send notification to User
 }
 ```
+
+### Vantagens
+- está claramente separando código antigo (legado) do novo;
+- mesmo que você não o teste naquele momento, você está deixando a porta aberta para novas mudanças e testes futuros;
+
+### Desvantagens
+- quando você escolhe fazer um novo método, você está desistindo do método de origem no momento. Você não quer nem tentar testá-lo e tentar deixá-lo melhor;
+- as vezes não fica claro o porque toda a lógica está naquele método e apenas uma parte está em outra;
 
 ### Texto final
 
