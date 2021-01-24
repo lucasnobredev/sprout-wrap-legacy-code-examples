@@ -7,5 +7,6 @@ namespace SproutWrapClassAndMethodsExamples
     public interface IUserRepository
     {
         void Insert(User user);
+        void Update(User user);
     }
 }
