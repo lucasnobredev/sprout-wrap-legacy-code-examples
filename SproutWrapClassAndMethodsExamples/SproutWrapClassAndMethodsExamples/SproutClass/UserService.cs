@@ -11,8 +11,8 @@ namespace SproutWrapClassAndMethodsExamples.SproutClass
 {
     public class UserService
     {
-        private readonly INotification _notification;
         private readonly IConfiguration _configuration;
+        private readonly INotification _notification;
         public UserService(
             IConfiguration configuration,
             INotification notification)
