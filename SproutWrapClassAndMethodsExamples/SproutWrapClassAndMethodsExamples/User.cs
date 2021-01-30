@@ -6,14 +6,9 @@ namespace SproutWrapClassAndMethodsExamples
 {
     public class User
     {
-        public User(UserRequest request)
-        {
-
-        }
-
-        public bool IsValid()
-        {
-            return false;
-        }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
     }
 }
