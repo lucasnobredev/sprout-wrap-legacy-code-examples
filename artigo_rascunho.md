@@ -23,23 +23,47 @@ Wrap method e class
 O desenvolvedor recebeu a tarefa para incluir uma nova funcionalidade: um envio de e-mail para todo o usuário que for cadastrado. Quando ele olhou para o código, encontrou isto:
 
 ```csharp
-public class UserService
-{
-    private readonly IUserRepository _userRepository;
-    public UserService(IUserRepository userRepository)
+    public class UserService
     {
-        _userRepository = userRepository;
+        private readonly IConfiguration _configuration;
+        public UserService(
+            IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public void CreateUser(UserRequest request)
+        {
+            var user = new User();
+            user.Name = request.Name;
+            user.Email = request.Email;
+            user.Password = request.Password;
+
+            if(string.IsNullOrEmpty(user.Name) || user.Name.Length > 150)
+                throw new Exception("Name invalid");
+
+            if (string.IsNullOrEmpty(user.Email) || user.Email.Contains('@') == false || user.Email.Length > 100)
+                throw new Exception("Email invalid");
+
+            if (string.IsNullOrEmpty(user.Password) || user.Password.All(char.IsLetterOrDigit) == false || user.Email.Length > 40)
+                throw new Exception("Password invalid");
+
+            const string SQL = @"
+            INSERT INTO User (Name, Email, Password)
+            Values (@name, @email, @password)";
+
+            using (var connection = new SqlConnection(_configuration.GetConnectionString("SQLServer")))
+            {
+                var parameter = new DynamicParameters();
+                parameter.Add("@name", user.Name, DbType.AnsiString);
+                parameter.Add("@email", user.Email, DbType.AnsiString);
+                parameter.Add("@password", user.Password, DbType.AnsiString);
+
+                connection.Execute(SQL, parameter);
+            }
+        }
     }
 
-    public void CreateUser(UserRequest request)
-    {
-        var user = new User(request);
-        if (user.IsValid() == false)
-            return;
-
-        _userRepository.Insert(user);
-    }
-}
 ```
 
 Temos acima um fluxo de criação de usuário com um código bem legado e difícil de testar.
@@ -52,20 +76,52 @@ Uma nova alteração deve ser criada como um método novo. (novo comportamento)
 ### Solução
 
 ```csharp
-public void CreateUser(UserRequest request)
+public class UserService
 {
-    var user = new User(request);
-    if (user.IsValid() == false)
-        return;
+    private readonly IConfiguration _configuration;
+    public UserService(
+        IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
 
-    _userRepository.Insert(user);
+    public void CreateUser(UserRequest request)
+    {
+        var user = new User();
+        user.Name = request.Name;
+        user.Email = request.Email;
+        user.Password = request.Password;
 
-    SendNotificationToUser(user);
-}
+        if (string.IsNullOrEmpty(user.Name) || user.Name.Length > 150)
+            throw new Exception("Name invalid");
 
-private void SendNotificationToUser(User user)
-{
-    //... code to send notification to User
+        if (string.IsNullOrEmpty(user.Email) || user.Email.Contains('@') == false || user.Email.Length > 100)
+            throw new Exception("Email invalid");
+
+        if (string.IsNullOrEmpty(user.Password) || user.Password.All(char.IsLetterOrDigit) == false || user.Email.Length > 40)
+            throw new Exception("Password invalid");
+
+        const string SQL = @"
+        INSERT INTO User (Name, Email, Password)
+        Values (@name, @email, @password)";
+
+        using (var connection = new SqlConnection(_configuration.GetConnectionString("SQLServer")))
+        {
+            var parameter = new DynamicParameters();
+            parameter.Add("@name", user.Name, DbType.AnsiString);
+            parameter.Add("@email", user.Email, DbType.AnsiString);
+            parameter.Add("@password", user.Password, DbType.AnsiString);
+
+            connection.Execute(SQL, parameter);
+        }
+
+        SendNotificationToUser(user);
+    }
+
+    private void SendNotificationToUser(User user)
+    {
+        //... code to send notification to User
+    }
 }
 ```
 
@@ -83,6 +139,55 @@ private void SendNotificationToUser(User user)
 ## Sprout Class
 Uma nova alteração deve ser criada como um método novo. (novo comportamento)
 
+### Solução
+```csharp
+public class UserService
+{
+    private readonly IConfiguration _configuration;
+    private readonly INotification _notification;
+    public UserService(
+        IConfiguration configuration,
+        INotification notification)
+    {
+        _configuration = configuration;
+        _notification = notification;
+    }
+
+    public void CreateUser(UserRequest request)
+    {
+        var user = new User();
+        user.Name = request.Name;
+        user.Email = request.Email;
+        user.Password = request.Password;
+
+        if (string.IsNullOrEmpty(user.Name) || user.Name.Length > 150)
+            throw new Exception("Name invalid");
+
+        if (string.IsNullOrEmpty(user.Email) || user.Email.Contains('@') == false || user.Email.Length > 100)
+            throw new Exception("Email invalid");
+
+        if (string.IsNullOrEmpty(user.Password) || user.Password.All(char.IsLetterOrDigit) == false || user.Email.Length > 40)
+            throw new Exception("Password invalid");
+
+        const string SQL = @"
+        INSERT INTO User (Name, Email, Password)
+        Values (@name, @email, @password)";
+
+        using (var connection = new SqlConnection(_configuration.GetConnectionString("SQLServer")))
+        {
+            var parameter = new DynamicParameters();
+            parameter.Add("@name", user.Name, DbType.AnsiString);
+            parameter.Add("@email", user.Email, DbType.AnsiString);
+            parameter.Add("@password", user.Password, DbType.AnsiString);
+
+            connection.Execute(SQL, parameter);
+        }
+
+        _notification.Send(user);
+    }
+}
+```
+
 ### Vantagens
 - está claramente separando código antigo (legado) do novo;
 - mesmo que você não o teste naquele momento, você está deixando a porta aberta para novas mudanças e testes futuros;
@@ -99,6 +204,9 @@ Uma nova alteração deve ser criada como um método novo. (novo comportamento)
 ---
 ## Wrap Method 
 Uma nova alteração deve ser criada como um método novo. (novo comportamento)
+
+### Solução
+
 
 ### Vantagens
 - está claramente separando código antigo (legado) do novo;
