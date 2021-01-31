@@ -66,13 +66,15 @@ O desenvolvedor recebeu a tarefa para incluir uma nova funcionalidade: um envio 
 
 ```
 
-Temos acima um fluxo de criação de usuário com um código bem legado e difícil de testar.
+Temos acima um fluxo de criação de usuário com um código mal organizado, com ações misturadas, grandes dependências e difícil de testar. Para adicionar a funcionalidade de envio de e-mail, o desenvolvedor poderia simplesmente escrever toda a lógica de envio após a inserção do banco. Certo? Mas dessa maneira, estaríamos aumentando ainda mais a complexidade do método, que já possui muitas responsabilidades e dependências.
 
-Como resolver com Sprout?
+Como resolver este problema com a técnica de Sprout?
 
 ## Sprout Method
-Uma nova alteração deve ser criada como um método novo. (novo comportamento)
+------Uma nova alteração deve ser criada como um método novo. (novo comportamento)
 
+Um novo comportamento deve ser criado em um novo método. Ou seja, ao invés de escrever todo o código no método de ```CreateUser```, o desenvolvedor adicionará essa nova lógica em um novo método ```SendNotificationUser()```, fazendo com que o ```CreateUser``` apenas chame-o e dando inicio a um código mais limpo.
+ 
 ### Solução
 
 ```csharp
@@ -127,11 +129,11 @@ public class UserService
 
 ### Vantagens
 - está claramente separando código antigo (legado) do novo;
-- mesmo que você não o teste naquele momento, você está deixando a porta aberta para novas mudanças e testes futuros;
+- mesmo que você não o teste naquele momento, estará deixando a porta aberta para novas mudanças e testes futuros;
 
 ### Desvantagens
-- quando você escolhe fazer um novo método, você está desistindo do método de origem no momento. Você não quer nem tentar testá-lo e tentar deixá-lo melhor;
-- as vezes não fica claro o porque toda a lógica está naquele método e apenas uma parte está em outra;
+- quando você escolhe fazer um novo método, você está desistindo do método de origem naquele momento. Você não quer nem tentar testá-lo e tentar deixá-lo melhor;
+- as vezes não fica claro o porquê toda a lógica está naquele método e apenas uma parte está em outra;
 
 ### Texto final
 
