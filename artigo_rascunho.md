@@ -71,6 +71,7 @@ Temos acima um fluxo de criação de usuário com um código mal organizado, com
 Como resolver este problema com a técnica de Sprout?
 
 ## Sprout Method
+
 ------Uma nova alteração deve ser criada como um método novo. (novo comportamento)
 
 Um novo comportamento deve ser criado em um novo método. Ou seja, ao invés de escrever todo o código no método de ```CreateUser```, o desenvolvedor adicionará essa nova lógica em um novo método ```SendNotificationUser()```, fazendo com que o ```CreateUser``` apenas chame-o e dando inicio a um código mais limpo.
@@ -127,21 +128,35 @@ public class UserService
 }
 ```
 
+Acredito que esta maneira seja a primeira opção que vem a cabeça quando estamos falando de um código legado, quando há pouco tempo para alteração ser feita ou quando o código é temporário.
+
 ### Vantagens
+
 - está claramente separando código antigo (legado) do novo;
 - mesmo que você não o teste naquele momento, estará deixando a porta aberta para novas mudanças e testes futuros;
 
 ### Desvantagens
-- quando você escolhe fazer um novo método, você está desistindo do método de origem naquele momento. Você não quer nem tentar testá-lo e tentar deixá-lo melhor;
-- as vezes não fica claro o porquê toda a lógica está naquele método e apenas uma parte está em outra;
 
-### Texto final
+- quando você escolhe fazer um novo método, está desistindo do método de origem naquele momento. Você não quer nem tentar testá-lo ou deixá-lo melhor;
+- as vezes não fica claro o porquê de toda a lógica estar naquele método e apenas uma parte está em outra;
+- se optar sempre por esta opção, há o risco da sua classe ter cada vez mais métodos privados e dificultando a manutenção;
 
 ---
 ## Sprout Class
-Uma nova alteração deve ser criada como um método novo. (novo comportamento)
+
+Um novo comportamento deve ser criado **em uma nova classe**. Ou seja, ao invés de escrever todo o código no método de ```CreateUser```, o desenvolvedor adicionará essa nova lógica em uma nova classe chamada ```NotificationService```, fazendo com que o ```CreateUser``` apenas chame-o através da interface ```INotification``` e dando inicio a um código mais limpo.
 
 ### Solução
+```csharp
+public class NotificationService : INotification
+{
+    public void Send(User user)
+    {
+        //... code to send notification to User
+    }
+}
+```
+
 ```csharp
 public class UserService
 {
@@ -191,17 +206,16 @@ public class UserService
 ```
 
 ### Vantagens
-- está claramente separando código antigo (legado) do novo;
-- mesmo que você não o teste naquele momento, você está deixando a porta aberta para novas mudanças e testes futuros;
+
+- dará mais confiança para fazer um código melhor e testável;
+- não adicionará mais um método a uma classe legada;
 
 ### Desvantagens
-- quando você escolhe fazer um novo método, você está desistindo do método de origem no momento. Você não quer nem tentar testá-lo e tentar deixá-lo melhor;
-- as vezes não fica claro o porque toda a lógica está naquele método e apenas uma parte está em outra;
-- 
 
-### Exemplo em código
-
-### Texto final
+- complexidade;
+- geralmente SproutClasses nunca voltam ao conceito correto da aplicação, pelo contrário, começam a fazer parte da lógica de negócio como classes novas;
+- "você pode achar que separar uma classe é algo insignificante ao design da aplicação até... você criar algo similiar em algum outro lugar. Risco de código duplicado."
+- "o jeito que você olha pra classe quando cria muda completamente depois de alguns meses. Quando vc precisa fazer uma nova mudança, você começa a pensar aonde a regra deve estar: no conceito correto ou no novo que vc criou."
 
 ---
 ## Wrap Method 
