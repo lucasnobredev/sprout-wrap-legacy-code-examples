@@ -4,16 +4,16 @@ using System.Text;
 
 namespace SproutWrapClassAndMethodsExamples.WrapMethod
 {
-    public class NotificationService : WrapMethod.INotification
+    public class UserHelper : WrapMethod.IUserHelper
     {
-        public void Send(User user)
+        public void HandleUserCreated(User user)
         {
             //... code to send email to User
         }
 
-        public void SendEmailAndSms(User user)
+        public void HandleUserCreatedSendingSms(User user)
         {
-            Send(user);
+            HandleUserCreated(user);
 
             //... code to send sms to User
         }

@@ -12,13 +12,13 @@ namespace SproutWrapClassAndMethodsExamples.WrapClass
     public class UserService
     {
         private readonly IConfiguration _configuration;
-        private readonly INotification _notification;
+        private readonly IUserHelper _userHelper;
         public UserService(
             IConfiguration configuration,
-            INotification notification)
+            IUserHelper userHelper)
         {
             _configuration = configuration;
-            _notification = notification;
+            _userHelper = userHelper;
         }
 
         public void CreateUser(UserRequest request)
@@ -51,7 +51,7 @@ namespace SproutWrapClassAndMethodsExamples.WrapClass
                 connection.Execute(SQL, parameter);
             }
 
-            _notification.Send(user);
+            _userHelper.HandleUserCreated(user);
         }
 
         public void UpdateUser(UserRequest request)
@@ -83,7 +83,7 @@ namespace SproutWrapClassAndMethodsExamples.WrapClass
                 connection.Execute(SQL, parameter);
             }
 
-            _notification.Send(user);
+            _userHelper.HandleUserCreated(user);
         }
     }
 }

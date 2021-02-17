@@ -4,9 +4,9 @@ using System.Text;
 
 namespace SproutWrapClassAndMethodsExamples.WrapClass
 {
-    public class EmailNotificationStrategy : INotification
+    public class UserHelperCommonStrategy : IUserHelper
     {
-        public void Send(User user)
+        public void HandleUserCreated(User user)
         {
             //... code to send email to User
         }

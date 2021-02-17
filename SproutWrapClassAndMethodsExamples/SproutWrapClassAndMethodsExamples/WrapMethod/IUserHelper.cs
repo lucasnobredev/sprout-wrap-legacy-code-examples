@@ -4,9 +4,9 @@ using System.Text;
 
 namespace SproutWrapClassAndMethodsExamples.WrapMethod
 {
-    public interface INotification
+    public interface IUserHelper
     {
-        void Send(User user);
-        void SendEmailAndSms(User user);
+        void HandleUserCreated(User user);
+        void HandleUserCreatedSendingSms(User user);
     }
 }

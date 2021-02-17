@@ -48,12 +48,13 @@ namespace SproutWrapClassAndMethodsExamples.SproutMethod
                 connection.Execute(SQL, parameter);
             }
 
-            SendNotificationToUser(user);
+            //SendNotificationToUser(user);
+            HandleUserCreated(user);
         }
 
-        private void SendNotificationToUser(User user)
+        private void HandleUserCreated(User user)
         {
-            //... code to send notification to User
+            //... code to send 
         }
     }
 }
